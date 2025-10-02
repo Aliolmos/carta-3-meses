@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Mi Querido Bufón</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            perspective: 1000px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s ease;
+        }
+
+        .header.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            color: #e94560;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a9b7d0;
+            font-style: italic;
+        }
+
+        .heart-divider {
+            font-size: 2rem;
+            color: #e94560;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .scroll-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #a9b7d0;
+            font-size: 1rem;
+            text-align: center;
+            z-index: 100;
+            opacity: 0.7;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transform: translateY(50px) rotateX(10deg);
+            transition: all 1s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0) rotateX(0);
+        }
+
+        .section:nth-child(even) {
+            transform: translateY(50px) rotateX(-10deg);
+        }
+
+        .section:nth-child(even).visible {
+            transform: translateY(0) rotateX(0);
+        }
+
+        .section-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: #e94560;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .section-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        .memory-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+            justify-items: center;
+        }
+
+        .memory {
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            transform: scale(0.9);
+            opacity: 0;
+            border: 3px solid #ffed4e;
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .memory.visible {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .memory:hover {
+            transform: scale(1.08);
+            box-shadow: 0 12px 25px rgba(255, 215, 0, 0.6);
+            background: linear-gradient(135deg, #ffed4e, #ffd700);
+        }
+
+        .memory-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        .memory-text {
+            font-size: 0.95rem;
+            color: #5a3e36;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .countdown-item {
+            background: rgba(233, 69, 96, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            min-width: 80px;
+            border: 1px solid rgba(233, 69, 96, 0.3);
+        }
+
+        .countdown-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #e94560;
+        }
+
+        .countdown-label {
+            font-size: 0.8rem;
+            color: #a9b7d0;
+            margin-top: 5px;
+        }
+
+        .final-message {
+            text-align: center;
+            padding: 40px 0;
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            color: #e94560;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 1s ease;
+        }
+
+        .final-message.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 1.5rem;
+            color: rgba(233, 69, 96, 0.3);
+            animation: float 15s linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .jester-icon {
+            font-size: 3rem;
+            text-align: center;
+            margin: 10px 0;
+            animation: wiggle 3s infinite alternate;
+        }
+
+        @keyframes wiggle {
+            0% { transform: rotate(-10deg); }
+            100% { transform: rotate(10deg); }
+        }
+
+        .highlight {
+            color: #e94560;
+            font-style: italic;
+            font-weight: bold;
+        }
+
+        .gold-highlight {
+            color: #ffd700;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .memory-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            
+            .memory {
+                width: 160px;
+                height: 160px;
+                padding: 15px;
+            }
+            
+            .memory-text {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .memory-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .memory {
+                width: 200px;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-hearts" id="floatingHearts"></div>
+    
+    <div class="container">
+        <div class="header" id="header">
+            <h1 class="title">Para Mi Querido Bufón</h1>
+            <p class="subtitle">Celebrando 3 meses de risas y locuras juntos</p>
+            <div class="jester-icon">🎭</div>
+        </div>
+        
+        <div class="scroll-indicator">
+            <p>Desplázate hacia abajo</p>
+            <div>↓</div>
+        </div>
+        
+        <div class="section" id="section1">
+            <h2 class="section-title">Mi Amado Bufón</h2>
+            <div class="section-content">
+                <p>Han pasado tres meses desde que este <span class="highlight">tonto maravilloso</span> llegó a mi vida, y cada día contigo es una aventura llena de risas y ocurrencias divertidas.</p>
+                <p>Eres el <span class="highlight">bufón de mi corazón</span>, el que sabe convertir cualquier momento aburrido en un espectáculo de comedia, y no cambiaría eso por nada en el mundo.</p>
+            </div>
+        </div>
+        
+        <div class="heart-divider">❤️</div>
+        
+        <div class="section" id="section2">
+            <h2 class="section-title">Vos</h2>
+            <div class="section-content">
+                <p>Estas son algunas de las <span class="gold-highlight">cosas</span> que hacen que cada día a tu lado sea especial:</p>
+            </div>
+            <div class="memory-container">
+                <div class="memory" id="memory1">
+                    <div class="memory-icon">🤣</div>
+                    <div class="memory-text">Tus bromas que me hacen reír hasta doler la panza</div>
+                </div>
+                <div class="memory" id="memory2">
+                    <div class="memory-icon">🎪</div>
+                    <div class="memory-text">Cuando tocas la guitarra, como me encanta</div>
+                </div>
+                <div class="memory" id="memory3">
+                    <div class="memory-icon">💫</div>
+                    <div class="memory-text">Tus ocurrencias en los momentos más inesperados</div>
+                </div>
+                <div class="memory" id="memory4">
+                    <div class="memory-icon">✨</div>
+                    <div class="memory-text">Esas frases graciosas que repites todo el tiempo</div>
+                </div>
+                <div class="memory" id="memory5">
+                    <div class="memory-icon">🌟</div>
+                    <div class="memory-text">Cuando estas conmigo cuando no estoy bien</div>
+                </div>
+                <div class="memory" id="memory6">
+                    <div class="memory-icon">🎭</div>
+                    <div class="memory-text">los gritos que pegas a veces</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="heart-divider">💖</div>
+        
+        <div class="section" id="section3">
+            <h2 class="section-title">Lo Que Adoro de Mi Bufón</h2>
+            <div class="section-content">
+                <p>Me encanta que <span class="highlight">no te tomas la vida demasiado en serio</span> y que puedes reírte de ti mismo. Tu capacidad para encontrar el lado divertido de cualquier situación es un verdadero regalo.</p>
+                <p>Detrás de ese <span class="highlight">humor increíble</span> hay un corazón enorme, lleno de amor y ternura. Eres mi confidente, mi compañero de aventuras y el amor de mi vida, todo envuelto en un divertido paquete de ocurrencias graciosas.</p>
+            </div>
+        </div>
+        
+        <div class="heart-divider">💕</div>
+        
+        <div class="section" id="section4">
+            <h2 class="section-title">Nuestro Futuro Divertido</h2>
+            <div class="section-content">
+                <p>Estos tres meses son solo el <span class="highlight">primer acto de nuestro gran espectáculo</span>. Sueño con todos los momentos divertidos que nos esperan: más risas, más locuras y más aventuras juntos.</p>
+                <p>Prometo ser tu <span class="highlight">público más fiel</span>, reírme de tus bromas (incluso las malas) y apoyarte en cada una de tus ocurrencias. Juntos, nuestra vida será el circo más feliz del mundo.</p>
+            </div>
+            
+            <div class="countdown">
+                <div class="countdown-item">
+                    <div class="countdown-number" id="days">92</div>
+                    <div class="countdown-label">Días</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="hours">2208</div>
+                    <div class="countdown-label">Horas</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="minutes">132480</div>
+                    <div class="countdown-label">Minutos</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="final-message" id="finalMessage">
+            <p>Feliz 3er mes, mi querido bufón.</p>
+            <p>Que nunca dejemos de reírnos juntos.</p>
+            <p>Con todo mi amor,</p>
+            <p>Tu bufona favorita ❤️</p>
+        </div>
+    </div>
+
+    <script>
+        // Crear corazones flotantes
+        function createFloatingHearts() {
+            const container = document.getElementById('floatingHearts');
+            const heartCount = 15;
+            
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('floating-heart');
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDelay = Math.random() * 15 + 's';
+                heart.style.fontSize = (Math.random() * 1 + 1) + 'rem';
+                container.appendChild(heart);
+            }
+        }
+        
+        // Detectar elementos visibles al hacer scroll
+        function checkVisibility() {
+            const elements = document.querySelectorAll('.header, .section, .memory, .final-message');
+            const windowHeight = window.innerHeight;
+            
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            createFloatingHearts();
+            
+            // Mostrar elementos iniciales
+            const header = document.getElementById('header');
+            header.classList.add('visible');
+            
+            // Actualizar contador
+            function updateCountdown() {
+                const days = document.getElementById('days');
+                const hours = document.getElementById('hours');
+                const minutes = document.getElementById('minutes');
+                
+                if(days) days.textContent = '90';
+                if(hours) hours.textContent = '2160';
+                if(minutes) minutes.textContent = '129600';
+            }
+            
+            updateCountdown();
+            
+            // Comprobar visibilidad al hacer scroll
+            window.addEventListener('scroll', checkVisibility);
+            
+            // Comprobar visibilidad inicial
+            setTimeout(checkVisibility, 100);
+        });
+    </script>
+</body>
+</html>
